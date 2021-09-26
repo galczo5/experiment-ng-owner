@@ -5,7 +5,7 @@ import 'ng-owner';
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
-  owner: ''
+  owners: ['John Doe', 'Anne']
 })
 export class AppComponent {
   title = 'ng-owner-extension';

@@ -7,22 +7,27 @@ import { Component, NgModule, Directive, Pipe, Injectable, InjectableProvider } 
 declare module '@angular/core' {
   interface Component {
     owner?: string;
+    owners?: Array<string>;
   }
 
   interface NgModule {
     owner?: string;
+    owners?: Array<string>;
   }
 
   interface Directive {
     owner?: string;
+    owners?: Array<string>;
   }
 
   interface Pipe {
     owner?: string;
+    owners?: Array<string>;
   }
 
   interface ConstructorSansProvider {
     owner?: string;
+    owners?: Array<string>;
   }
 }
 

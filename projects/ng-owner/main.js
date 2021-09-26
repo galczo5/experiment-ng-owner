@@ -1,22 +1,57 @@
-const { getParsedCommandLineOfConfigFile, sys, createProgram } = require('typescript');
+const {program} = require('commander');
 
+const {
+  getParsedCommandLineOfConfigFile,
+  sys,
+  createProgram
+} = require('typescript');
 
-const parsed = getParsedCommandLineOfConfigFile(process.argv[2], undefined, sys);
-const program = createProgram({
-  rootNames: parsed.fileNames,
-  options: parsed.options,
-});
+const {createDecoratorResult, getResultForMultipleOwners, getResultForSingleOwner, getResult, printResults} = require("./helpers");
+const {ownableDecorators} = require("./consts");
 
-for (let sourceFile of program.getSourceFiles()) {
+program
+  .description('ng-owner - cli analyser')
+  .requiredOption('--tsconfig [path]', 'path to tsconfig.json file')
+  .option('--json')
+  .parse(process.argv);
 
-  if (parsed.fileNames.includes(sourceFile.path) && sourceFile.path.includes('component')) {
+function main(tsConfigPath, jsonOutput) {
+  const result = ownableDecorators.map(createDecoratorResult);
+  const parsed = getParsedCommandLineOfConfigFile(tsConfigPath, undefined, sys);
 
-    for (const stmt of sourceFile.statements) {
-      if (stmt.decorators) {
-        for (const decorator of stmt.decorators) {
-          console.log(decorator.expression.arguments[0].properties);
-        }
+  if (!parsed) {
+    throw new Error('tsconfig file not exist');
+  }
+
+  const tsProgram = createProgram({rootNames: parsed.fileNames, options: parsed.options});
+
+  for (let sourceFile of tsProgram.getSourceFiles()) {
+
+    if (!parsed.fileNames.includes(sourceFile.getSourceFile().fileName)) {
+      continue;
+    }
+
+    const statementsWithDecorators = sourceFile.statements.filter(s => !!s.decorators);
+    for (const stmt of statementsWithDecorators) {
+
+      const validDecorators = stmt.decorators.filter(d => {
+        const decoratorName = d.expression.expression.escapedText;
+        return ownableDecorators.includes(decoratorName);
+      });
+
+      for (const decorator of validDecorators) {
+        const decoratorName = decorator.expression.expression.escapedText;
+
+        const found = getResult(result, decoratorName).files;
+        const properties = decorator.expression.arguments[0].properties;
+
+        getResultForSingleOwner(result, properties, decoratorName, sourceFile, stmt, found);
+        getResultForMultipleOwners(result, properties, decoratorName, sourceFile, stmt, found);
       }
     }
   }
+
+  printResults(result, jsonOutput);
 }
+
+main(program.opts()['tsconfig'], program.opts()['json'])

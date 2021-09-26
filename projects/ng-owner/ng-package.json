@@ -3,5 +3,10 @@
   "dest": "../../dist/ng-owner",
   "lib": {
     "entryFile": "src/public-api.ts"
-  }
+  },
+  "assets": [
+    "./main.js",
+    "./consts.js",
+    "./helpers.js"
+  ]
 }
