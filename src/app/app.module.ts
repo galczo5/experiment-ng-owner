@@ -11,7 +11,6 @@ import { AppComponent } from './app.component';
     BrowserModule
   ],
   providers: [],
-  bootstrap: [AppComponent],
-  owner: 'Kamil'
+  bootstrap: [AppComponent]
 })
 export class AppModule { }

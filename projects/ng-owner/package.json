@@ -1,6 +1,9 @@
 {
   "name": "ng-owner",
   "version": "0.0.2",
+  "scripts": {
+    "prerelease": "esbuild main.js --bundle --platform=node > ng-owner.js"
+  },
   "peerDependencies": {
     "@angular/common": "^12.1.0",
     "@angular/core": "^12.1.0"
@@ -9,11 +12,13 @@
     "tslib": "^2.2.0"
   },
   "bin": {
-    "ng-owner": "./main.js"
+    "ng-owner": "./ng-owner.js.js"
   },
   "devDependencies": {
     "@types/commander": "^2.12.2",
     "@types/node": "^16.10.1",
-    "commander": "^8.2.0"
+    "columnify": "^1.5.4",
+    "commander": "^8.2.0",
+    "esbuild": "^0.13.2"
   }
 }

@@ -6,7 +6,13 @@ const {
   createProgram
 } = require('typescript');
 
-const {createDecoratorResult, getResultForMultipleOwners, getResultForSingleOwner, getResult, printResults} = require("./helpers");
+const {
+  createDecoratorResult,
+  getResult,
+  printResults,
+  getResultForOwner
+} = require("./helpers");
+
 const {ownableDecorators} = require("./consts");
 
 program
@@ -45,8 +51,7 @@ function main(tsConfigPath, jsonOutput) {
         const found = getResult(result, decoratorName).files;
         const properties = decorator.expression.arguments[0].properties;
 
-        getResultForSingleOwner(result, properties, decoratorName, sourceFile, stmt, found);
-        getResultForMultipleOwners(result, properties, decoratorName, sourceFile, stmt, found);
+        getResultForOwner(result, properties, decoratorName, sourceFile, stmt, found);
       }
     }
   }

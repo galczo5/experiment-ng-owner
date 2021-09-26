@@ -1,3 +1,5 @@
+const columnify = require('columnify');
+
 function createDecoratorResult(name) {
   return {
     name: name,
@@ -13,26 +15,23 @@ function createRecord(file, module, owners) {
   }
 }
 
-function getResultForSingleOwner(result, properties, decoratorName, sourceFile, stmt, found) {
+function getResultForOwner(result, properties, decoratorName, sourceFile, stmt, found) {
   const ownerProp = properties.find(prop => prop.name.escapedText === 'owner');
-  if (ownerProp) {
-    const owners = [ownerProp.initializer.text];
-    getResult(result, decoratorName).files = [
-      createRecord(sourceFile.getSourceFile().fileName, stmt.name.escapedText, owners),
-      ...found
-    ];
-  }
-}
-
-function getResultForMultipleOwners(result, properties, decoratorName, sourceFile, stmt, found) {
   const ownersProp = properties.find(prop => prop.name.escapedText === 'owners');
-  if (ownersProp) {
-    const owners = ownersProp.initializer.elements.map(e => e.text);
-    getResult(result, decoratorName).files = [
-      createRecord(sourceFile.getSourceFile().fileName, stmt.name.escapedText, owners),
-      ...found
-    ];
+  const owners = [];
+
+  if (ownerProp) {
+    owners.push(ownerProp.initializer.text);
+  } else if (ownersProp) {
+    owners.push(...ownersProp.initializer.elements.map(e => e.text));
+  } else {
+    owners.push('');
   }
+
+  getResult(result, decoratorName).files = [
+    createRecord(sourceFile.getSourceFile().fileName, stmt.name.escapedText, owners),
+    ...found
+  ];
 }
 
 function getResult(result, decorator) {
@@ -43,36 +42,30 @@ function printResults(result, jsonOutput) {
   if (jsonOutput) {
     console.log(JSON.stringify(result, null, 2));
   } else {
-    let byOwner = {};
+    let byOwner = [];
 
     for (let resultElement of result) {
       for (let file of resultElement.files) {
         for (let owner of file.owners) {
-          if (byOwner[owner]) {
-            byOwner[owner] = [...byOwner[owner], `${file.file}:${file.module}`];
-          } else {
-            byOwner[owner] = [`${file.file}:${file.module}`];
-          }
+         byOwner.push({
+           owner: owner,
+           module: file.module,
+           file: file.file
+         });
         }
       }
     }
 
-    for (let owner in byOwner) {
-      console.log('#', owner);
-      for (const x of byOwner[owner]) {
-        console.log(x);
-      }
+    byOwner.sort((a, b) => a.owner > b.owner ? 1 : -1);
 
-      console.log();
-    }
+    console.log(columnify(byOwner));
   }
 }
 
 module.exports = {
   createDecoratorResult,
   createRecord,
-  getResultForSingleOwner,
-  getResultForMultipleOwners,
+  getResultForOwner,
   getResult,
   printResults
 };
