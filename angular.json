@@ -100,6 +100,37 @@
           }
         }
       }
+    },
+    "ng-owner": {
+      "projectType": "library",
+      "root": "projects/ng-owner",
+      "sourceRoot": "projects/ng-owner/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/ng-owner/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/ng-owner/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/ng-owner/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/ng-owner/src/test.ts",
+            "tsConfig": "projects/ng-owner/tsconfig.spec.json",
+            "karmaConfig": "projects/ng-owner/karma.conf.js"
+          }
+        }
+      }
     }
   },
   "defaultProject": "ng-owner-extension"
