@@ -1,6 +1,6 @@
 {
   "name": "ng-owner",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "scripts": {
     "prerelease": "esbuild main.js --bundle --platform=node > ng-owner.js"
   },
@@ -12,7 +12,7 @@
     "tslib": "^2.2.0"
   },
   "bin": {
-    "ng-owner": "./ng-owner.js.js"
+    "ng-owner": "./ng-owner.js"
   },
   "devDependencies": {
     "@types/commander": "^2.12.2",

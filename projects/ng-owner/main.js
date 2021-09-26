@@ -1,3 +1,5 @@
+#!/usr/bin/node
+
 const {program} = require('commander');
 
 const {

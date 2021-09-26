@@ -1,27 +1,50 @@
-# NgOwnerExtension
+# ng-owner - Angular helper that helps you define who is the owner of the module
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 12.1.2.
+## Why?
+Working in medium and huge companies sometimes is hard. Sometimes is hard to say who is responsible for the module/component/directive/pipe/service.
 
-## Development server
+With `ng-owner` it's easy to define who should care of the quality of the piece of code.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+## Installation
 
-## Code scaffolding
+```
+npm install --save ng-owner
+or
+yarn add ng-owner
+```
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## Usage
 
-## Build
+Usage is quite simple. Just import `ng-owner` into your file and after that, you can add fields `owner` or `owners` in your metadata.
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+Example:
+```angular2html
+import { Component } from '@angular/core';
 
-## Running unit tests
+import 'ng-owner';
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+  owner: 'John Doe'
+})
+export class AppComponent {
+  // ...
+}
+```
 
-## Running end-to-end tests
+## CLI tools
+With `ng-owner` package you'll get the access to `ng-owner` CLI command.
+It needs only one argument `--tsconfig`, it's the path to your project's` tsconfig.json` file.
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+Example:
+```
+> ng-owner --tsconfig ./tsconfig.json
+OWNER    MODULE       FILE                                                       
+         AppModule    /home/kamil/Dev/ng-owner-extension/src/app/app.module.ts   
+John Doe AppComponent /home/kamil/Dev/ng-owner-extension/src/app/app.component.ts
+```
 
-## Further help
+There is a second, optional, argument `--json` that allows you to export data as json.
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
